@@ -56,7 +56,9 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="HookCallbacks.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="KeyboardHook.cs" />
+    <Compile Include="Run.cs" />
     <Compile Include="RunRecord.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsDialog.cs">

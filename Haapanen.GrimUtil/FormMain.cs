@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace Haapanen.GrimUtil.Ui
 {
@@ -23,8 +24,9 @@ namespace Haapanen.GrimUtil.Ui
         private TimerManager _timerManager = new TimerManager();
         private Timer _viewRefreshTimer = new Timer();
         private int _currentRun = 0;
-        private List<string> _runs = new List<string>() { "Unknown run" };
+        private List<Run> _runs = new List<Run>() { new Run() { Name = "Unknown run", TrackedItems = new List<string>() } };
         private List<RunRecord> _runRecords = new List<RunRecord>();
+        private Dictionary<string, BindingList<Item>> _trackedItems = new Dictionary<string, BindingList<Item>>();
 
         public FormMain()
         {
@@ -35,7 +37,16 @@ namespace Haapanen.GrimUtil.Ui
                 Directory.CreateDirectory(_appDataFolder);
             }
             _settingsRepository = new SettingsRepository(_appDataFolder);
-            _settings = _settingsRepository.LoadSettings();
+            try
+            {
+                _settings = _settingsRepository.LoadSettings();
+            }
+            catch (JsonException e)
+            {
+                _settings = new Settings();
+                _settingsRepository.BackupSettingsFile();
+                _settingsRepository.WriteSettings(_settings);
+            }
 
             InitializeKeyboardHook();
             ApplySettings(_settings);
@@ -45,6 +56,25 @@ namespace Haapanen.GrimUtil.Ui
             _viewRefreshTimer.Interval = 100;
             _viewRefreshTimer.Tick += ViewRefreshTimerOnTick;
             _viewRefreshTimer.Start();
+        }
+
+        private string GetCurrentRunName()
+        {
+            return _runs[_currentRun].Name;
+        }
+
+        private void InitializeTrackedItemsGrid()
+        {
+            if (!_trackedItems.ContainsKey(GetCurrentRunName()))
+            {
+                _trackedItems[GetCurrentRunName()] = new BindingList<Item>(
+                    _runs[_currentRun].TrackedItems.Select(i => new Item(i)
+                    {
+                        Count = 0
+                    }).ToList()
+                );
+            }
+            trackedItemsGrid.DataSource = _trackedItems[GetCurrentRunName()];
         }
 
         private void ClearLogButtonOnClick(object o, EventArgs eventArgs)
@@ -58,25 +88,26 @@ namespace Haapanen.GrimUtil.Ui
 
         private void CopyToClipboardButonOnClick(object o, EventArgs eventArgs)
         {
-            Clipboard.SetText(string.Join("\r\n", _runRecords.Select(r => r.Duration.ToString("g", CultureInfo.InvariantCulture))));
+            Clipboard.SetText(string.Join("\r\n", _runRecords.Select(r => r.ToSpreadsheet())));
         }
 
         private void ViewRefreshTimerOnTick(object o, EventArgs eventArgs)
         {
-            currentRunTimeLabel.Text = _timerManager.GetDuration(_runs[_currentRun]).ToString("g");
+            currentRunTimeLabel.Text = _timerManager.GetDuration(GetCurrentRunName()).ToString("g");
         }
 
         private void ApplySettings(Settings settings)
         {
-            _timerManager.SetAvailableRuns(settings.Runs);
+            _timerManager.SetAvailableRuns(settings.Runs.Select(r => r.Name).ToList());
             SetupKeyboardHooks(settings);
             _runs = settings.Runs;
             if (!_runs.Any())
             {
-                _runs = new List<string>() { "Unknown run" };
+                _runs = new List<Run>() { new Run() { Name = "Unknown run", TrackedItems = new List<string>() } };
             }
             _currentRun = 0;
             UpdateCurrentRunLabel();
+            InitializeTrackedItemsGrid();
         }
 
         private void SetupKeysToolStripMenuItemOnClick(object o, EventArgs eventArgs)
@@ -109,40 +140,89 @@ namespace Haapanen.GrimUtil.Ui
             {
                 OnKeyUp = OnChangeRunPress
             });
+            _hook.SetKeyboardHook(settings.SelectedNextItemKey, new HookCallbacks
+            {
+                OnKeyUp = OnNextItemPress
+            });
+            _hook.SetKeyboardHook(settings.SelectPreviousItemKey, new HookCallbacks
+            {
+                OnKeyUp = OnPrevItemPress
+            });
+            _hook.SetKeyboardHook(settings.IncrementCurrentItemKey, new HookCallbacks
+            {
+                OnKeyUp = OnIncValuePress
+            });
+            _hook.SetKeyboardHook(settings.DecrementCurrentItemKey, new HookCallbacks
+            {
+                OnKeyUp = OnDecValuePress
+            });
+        }
+
+        private void OnDecValuePress()
+        {
+            _trackedItems[GetCurrentRunName()][trackedItemsGrid.CurrentCell.RowIndex].Count--;
+            trackedItemsGrid.Refresh();
+        }
+
+        private void OnIncValuePress()
+        {
+            _trackedItems[GetCurrentRunName()][trackedItemsGrid.CurrentCell.RowIndex].Count++;
+            trackedItemsGrid.Refresh();
+        }
+
+        private void OnPrevItemPress()
+        {
+            trackedItemsGrid.CurrentCell = trackedItemsGrid[trackedItemsGrid.CurrentCell.ColumnIndex,
+                Math.Max(trackedItemsGrid.CurrentCell.RowIndex - 1, 0)];
+        }
+
+        private void OnNextItemPress()
+        {
+            trackedItemsGrid.CurrentCell = trackedItemsGrid[trackedItemsGrid.CurrentCell.ColumnIndex,
+                Math.Min(trackedItemsGrid.CurrentCell.RowIndex + 1, trackedItemsGrid.RowCount - 1)];
         }
 
         private void OnStartTimerPress()
         {
-            _timerManager.StartTimer(_runs[_currentRun]);
+            _timerManager.StartTimer(GetCurrentRunName());
         }
 
         private void OnResetTimerPress()
         {
-            var currentRun = _runs[_currentRun];
+            var currentRun = GetCurrentRunName();
             var duration = _timerManager.GetDuration(currentRun);
             _runRecords.Add(new RunRecord
             {
                 Run = currentRun,
-                Duration = _timerManager.GetDuration(currentRun)
+                Duration = _timerManager.GetDuration(currentRun),
+                Items = _trackedItems[currentRun].ToList()
             });
             logTextBox.Text = string.Format("{0}: {1}\r\n", currentRun, duration.ToString("g", CultureInfo.InvariantCulture)) + logTextBox.Text;
             _timerManager.ResetTimer(currentRun);
+            _trackedItems[currentRun] = new BindingList<Item>(
+                _runs[_currentRun].TrackedItems.Select(i => new Item(i)
+                {
+                    Count = 0
+                }).ToList()
+            ); 
+            InitializeTrackedItemsGrid();
         }
 
         private void OnStopTimerPress()
         {
-            _timerManager.StopTimer(_runs[_currentRun]);
+            _timerManager.StopTimer(GetCurrentRunName());
         }
 
         private void OnChangeRunPress()
         {
             _currentRun = (_currentRun + 1) % _runs.Count;
             UpdateCurrentRunLabel();
+            InitializeTrackedItemsGrid();
         }
 
         private void UpdateCurrentRunLabel()
         {
-            currentRunLabel.Text = _runs[_currentRun];
+            currentRunLabel.Text = GetCurrentRunName();
         }
 
         private void InitializeKeyboardHook()

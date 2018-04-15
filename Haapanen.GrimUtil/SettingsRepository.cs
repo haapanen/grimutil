@@ -33,7 +33,13 @@ namespace Haapanen.GrimUtil.Ui
 
         public void WriteSettings(Settings settings)
         {
-            File.WriteAllText(_settingsPath, JsonConvert.SerializeObject(settings));
+            File.WriteAllText(_settingsPath, JsonConvert.SerializeObject(settings, Formatting.Indented));
+        }
+
+        public void BackupSettingsFile()
+        {
+            var contents = File.ReadAllText(_settingsPath);
+            File.WriteAllText(_settingsPath + $"-{DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss")}.bak", contents);
         }
     }
 }

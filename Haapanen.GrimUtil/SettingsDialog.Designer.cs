@@ -42,12 +42,26 @@
             this.runDataGridView = new System.Windows.Forms.DataGridView();
             this.moveDownButton = new System.Windows.Forms.Button();
             this.moveUpButton = new System.Windows.Forms.Button();
+            this.runItemsLabel = new System.Windows.Forms.Label();
+            this.trackedItemsGrid = new System.Windows.Forms.DataGridView();
+            this.trackedItemsMoveDownButton = new System.Windows.Forms.Button();
+            this.trackedItemsMoveUpButton = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.selectPreviousKeyCombobox = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.selectNextCombobox = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.incrementCountKeyCombobox = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.decrementCountKeyCombobox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.runDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackedItemsGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(330, 305);
+            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.okButton.Location = new System.Drawing.Point(330, 396);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 0;
@@ -56,7 +70,8 @@
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(249, 305);
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelButton.Location = new System.Drawing.Point(249, 396);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
@@ -172,11 +187,131 @@
             this.moveUpButton.Text = "Move up";
             this.moveUpButton.UseVisualStyleBackColor = true;
             // 
+            // runItemsLabel
+            // 
+            this.runItemsLabel.AutoSize = true;
+            this.runItemsLabel.Location = new System.Drawing.Point(142, 197);
+            this.runItemsLabel.Name = "runItemsLabel";
+            this.runItemsLabel.Size = new System.Drawing.Size(95, 13);
+            this.runItemsLabel.TabIndex = 15;
+            this.runItemsLabel.Text = "Tracked items for: ";
+            // 
+            // trackedItemsGrid
+            // 
+            this.trackedItemsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackedItemsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.trackedItemsGrid.Location = new System.Drawing.Point(145, 213);
+            this.trackedItemsGrid.Name = "trackedItemsGrid";
+            this.trackedItemsGrid.Size = new System.Drawing.Size(260, 130);
+            this.trackedItemsGrid.TabIndex = 16;
+            // 
+            // trackedItemsMoveDownButton
+            // 
+            this.trackedItemsMoveDownButton.Enabled = false;
+            this.trackedItemsMoveDownButton.Location = new System.Drawing.Point(330, 349);
+            this.trackedItemsMoveDownButton.Name = "trackedItemsMoveDownButton";
+            this.trackedItemsMoveDownButton.Size = new System.Drawing.Size(75, 23);
+            this.trackedItemsMoveDownButton.TabIndex = 17;
+            this.trackedItemsMoveDownButton.Text = "Move down";
+            this.trackedItemsMoveDownButton.UseVisualStyleBackColor = true;
+            // 
+            // trackedItemsMoveUpButton
+            // 
+            this.trackedItemsMoveUpButton.Enabled = false;
+            this.trackedItemsMoveUpButton.Location = new System.Drawing.Point(249, 349);
+            this.trackedItemsMoveUpButton.Name = "trackedItemsMoveUpButton";
+            this.trackedItemsMoveUpButton.Size = new System.Drawing.Size(75, 23);
+            this.trackedItemsMoveUpButton.TabIndex = 18;
+            this.trackedItemsMoveUpButton.Text = "Move up";
+            this.trackedItemsMoveUpButton.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(12, 213);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(80, 13);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "Select previous";
+            // 
+            // selectPreviousKeyCombobox
+            // 
+            this.selectPreviousKeyCombobox.FormattingEnabled = true;
+            this.selectPreviousKeyCombobox.Location = new System.Drawing.Point(15, 229);
+            this.selectPreviousKeyCombobox.Name = "selectPreviousKeyCombobox";
+            this.selectPreviousKeyCombobox.Size = new System.Drawing.Size(121, 21);
+            this.selectPreviousKeyCombobox.TabIndex = 20;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(12, 253);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(60, 13);
+            this.label7.TabIndex = 21;
+            this.label7.Text = "Select next";
+            // 
+            // selectNextCombobox
+            // 
+            this.selectNextCombobox.FormattingEnabled = true;
+            this.selectNextCombobox.Location = new System.Drawing.Point(15, 269);
+            this.selectNextCombobox.Name = "selectNextCombobox";
+            this.selectNextCombobox.Size = new System.Drawing.Size(121, 21);
+            this.selectNextCombobox.TabIndex = 22;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(14, 293);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(84, 13);
+            this.label8.TabIndex = 23;
+            this.label8.Text = "Increment count";
+            // 
+            // incrementCountKeyCombobox
+            // 
+            this.incrementCountKeyCombobox.FormattingEnabled = true;
+            this.incrementCountKeyCombobox.Location = new System.Drawing.Point(15, 309);
+            this.incrementCountKeyCombobox.Name = "incrementCountKeyCombobox";
+            this.incrementCountKeyCombobox.Size = new System.Drawing.Size(121, 21);
+            this.incrementCountKeyCombobox.TabIndex = 24;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(14, 333);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(89, 13);
+            this.label9.TabIndex = 25;
+            this.label9.Text = "Decrement count";
+            // 
+            // decrementCountKeyCombobox
+            // 
+            this.decrementCountKeyCombobox.FormattingEnabled = true;
+            this.decrementCountKeyCombobox.Location = new System.Drawing.Point(15, 349);
+            this.decrementCountKeyCombobox.Name = "decrementCountKeyCombobox";
+            this.decrementCountKeyCombobox.Size = new System.Drawing.Size(121, 21);
+            this.decrementCountKeyCombobox.TabIndex = 26;
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(417, 340);
+            this.ClientSize = new System.Drawing.Size(417, 431);
+            this.Controls.Add(this.decrementCountKeyCombobox);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.incrementCountKeyCombobox);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.selectNextCombobox);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.selectPreviousKeyCombobox);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.trackedItemsMoveUpButton);
+            this.Controls.Add(this.trackedItemsMoveDownButton);
+            this.Controls.Add(this.trackedItemsGrid);
+            this.Controls.Add(this.runItemsLabel);
             this.Controls.Add(this.moveUpButton);
             this.Controls.Add(this.moveDownButton);
             this.Controls.Add(this.runDataGridView);
@@ -194,6 +329,7 @@
             this.Name = "SettingsDialog";
             this.Text = "Settings";
             ((System.ComponentModel.ISupportInitialize)(this.runDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackedItemsGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -215,5 +351,17 @@
         private System.Windows.Forms.DataGridView runDataGridView;
         private System.Windows.Forms.Button moveDownButton;
         private System.Windows.Forms.Button moveUpButton;
+        private System.Windows.Forms.Label runItemsLabel;
+        private System.Windows.Forms.DataGridView trackedItemsGrid;
+        private System.Windows.Forms.Button trackedItemsMoveDownButton;
+        private System.Windows.Forms.Button trackedItemsMoveUpButton;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox selectPreviousKeyCombobox;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox selectNextCombobox;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox incrementCountKeyCombobox;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox decrementCountKeyCombobox;
     }
 }
