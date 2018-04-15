@@ -191,10 +191,14 @@ namespace Haapanen.GrimUtil.Ui
         {
             var currentRun = GetCurrentRunName();
             var duration = _timerManager.GetDuration(currentRun);
+            if (duration == TimeSpan.Zero)
+            {
+                return;
+            }
             _runRecords.Add(new RunRecord
             {
                 Run = currentRun,
-                Duration = _timerManager.GetDuration(currentRun),
+                Duration = duration,
                 Items = _trackedItems[currentRun].ToList()
             });
             logTextBox.Text = string.Format("{0}: {1}\r\n", currentRun, duration.ToString("g", CultureInfo.InvariantCulture)) + logTextBox.Text;
