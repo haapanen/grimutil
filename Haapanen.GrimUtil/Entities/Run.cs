@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Haapanen.GrimUtil.Ui
+namespace Haapanen.GrimUtil.Ui.Entities
 {
     public class Run
     {

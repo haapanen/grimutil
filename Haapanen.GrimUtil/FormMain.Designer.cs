@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.setupKeysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logTextBox = new System.Windows.Forms.TextBox();
@@ -178,6 +179,7 @@
             this.Controls.Add(this.logLabel);
             this.Controls.Add(this.logTextBox);
             this.Controls.Add(this.menuStrip);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
             this.Name = "FormMain";
             this.Text = "Grim Dawn Utilities";

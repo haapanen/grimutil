@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Haapanen.GrimUtil.Ui.Entities;
 
-namespace Haapanen.GrimUtil.Ui
+namespace Haapanen.GrimUtil.Ui.Dialogs
 {
     public partial class SettingsDialog : Form
     {
@@ -41,6 +37,66 @@ namespace Haapanen.GrimUtil.Ui
             trackedItemsMoveUpButton.Click += TrackedItemsMoveUpButtonOnClick;
             trackedItemsMoveDownButton.Click += TrackedItemsMoveDownButtonOnClick;
         }
+
+        #region Initialization
+
+        private void InitializeTrackedItemsGridView()
+        {
+            if (_selectedRun == null)
+            {
+                _itemsDataSource = new BindingList<ItemWrapper>();
+                trackedItemsGrid.Enabled = false;
+            }
+            else
+            {
+                _itemsDataSource = new BindingList<ItemWrapper>(
+                    _selectedRun.TrackedItems.Select(ti => new ItemWrapper { Name = ti }).ToList()
+                );
+                trackedItemsGrid.Enabled = true;
+            }
+            trackedItemsGrid.DataSource = _itemsDataSource;
+        }
+
+        private void InitializeRunGridView()
+        {
+            _runDataSource = new BindingList<Run>(Settings.Runs.ToList());
+            runDataGridView.DataSource = _runDataSource;
+        }
+
+        private void InitializeKeysComboboxes()
+        {
+            startTimerKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
+            stopTimerKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
+            resetTimerKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
+            changeRunKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
+            selectNextCombobox.DataSource = Enum.GetValues(typeof(Keys));
+            selectPreviousKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
+            incrementCountKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
+            decrementCountKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
+
+            startTimerKeyCombobox.SelectedItem = Settings.StartTimerKey;
+            stopTimerKeyCombobox.SelectedItem = Settings.StopTimerKey;
+            resetTimerKeyCombobox.SelectedItem = Settings.ResetTimerKey;
+            changeRunKeyCombobox.SelectedItem = Settings.ChangeRunKey;
+            selectNextCombobox.SelectedItem = Settings.SelectedNextItemKey;
+            selectPreviousKeyCombobox.SelectedItem = Settings.SelectPreviousItemKey;
+            incrementCountKeyCombobox.SelectedItem = Settings.IncrementCurrentItemKey;
+            decrementCountKeyCombobox.SelectedItem = Settings.DecrementCurrentItemKey;
+        }
+
+
+        #endregion
+
+        #region Internal API
+
+        private void UpdateTrackedItems()
+        {
+            _selectedRun.TrackedItems = ((BindingList<ItemWrapper>)_itemsDataSource).Select(i => i.Name).ToList();
+        }
+
+        #endregion
+
+        #region Event handlers
 
         private void TrackedItemsGridOnSelectionChanged(object sender, EventArgs eventArgs)
         {
@@ -76,23 +132,6 @@ namespace Haapanen.GrimUtil.Ui
             trackedItemsGrid.Rows[newIndex].Selected = true;
         }
 
-        private void InitializeTrackedItemsGridView()
-        {
-            if (_selectedRun == null)
-            {
-                _itemsDataSource = new BindingList<ItemWrapper>();
-                trackedItemsGrid.Enabled = false;
-            }
-            else
-            {
-                _itemsDataSource = new BindingList<ItemWrapper>(
-                    _selectedRun.TrackedItems.Select(ti => new ItemWrapper{Name = ti}).ToList()    
-                );
-                trackedItemsGrid.Enabled = true;
-            }
-            trackedItemsGrid.DataSource = _itemsDataSource;
-        }
-
         private void RunDataGridViewOnSelectionChanged(object sender, EventArgs eventArgs)
         {
             if (_selectedRun != null)
@@ -108,11 +147,6 @@ namespace Haapanen.GrimUtil.Ui
             moveDownButton.Enabled = _selectedRun != null;
             moveUpButton.Enabled = _selectedRun != null;
             InitializeTrackedItemsGridView();
-        }
-
-        private void UpdateTrackedItems()
-        {
-            _selectedRun.TrackedItems = ((BindingList<ItemWrapper>) _itemsDataSource).Select(i => i.Name).ToList();
         }
 
         private void MoveDownButtonOnClick(object sender, EventArgs eventArgs)
@@ -137,35 +171,6 @@ namespace Haapanen.GrimUtil.Ui
             runDataGridView.Rows[newIndex].Selected = true;
         }
 
-        private void InitializeRunGridView()
-        {
-            //runDataGridView.Columns.Add(nameof(GridViewRun.Name), "Name");
-            
-            _runDataSource = new BindingList<Run>(Settings.Runs.ToList());
-            runDataGridView.DataSource = _runDataSource;
-        }
-
-        private void InitializeKeysComboboxes()
-        {
-            startTimerKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
-            stopTimerKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
-            resetTimerKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
-            changeRunKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
-            selectNextCombobox.DataSource = Enum.GetValues(typeof(Keys));
-            selectPreviousKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
-            incrementCountKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
-            decrementCountKeyCombobox.DataSource = Enum.GetValues(typeof(Keys));
-
-            startTimerKeyCombobox.SelectedItem = Settings.StartTimerKey;
-            stopTimerKeyCombobox.SelectedItem = Settings.StopTimerKey;
-            resetTimerKeyCombobox.SelectedItem = Settings.ResetTimerKey;
-            changeRunKeyCombobox.SelectedItem = Settings.ChangeRunKey;
-            selectNextCombobox.SelectedItem = Settings.SelectedNextItemKey;
-            selectPreviousKeyCombobox.SelectedItem = Settings.SelectPreviousItemKey;
-            incrementCountKeyCombobox.SelectedItem = Settings.IncrementCurrentItemKey;
-            decrementCountKeyCombobox.SelectedItem = Settings.DecrementCurrentItemKey;
-        }
-
         private void CancelButtonOnClick(object sender, EventArgs eventArgs)
         {
             DialogResult = DialogResult.Cancel;
@@ -184,8 +189,10 @@ namespace Haapanen.GrimUtil.Ui
             Settings.SelectPreviousItemKey = (Keys)selectPreviousKeyCombobox.SelectedItem;
             Settings.IncrementCurrentItemKey = (Keys)incrementCountKeyCombobox.SelectedItem;
             Settings.DecrementCurrentItemKey = (Keys)decrementCountKeyCombobox.SelectedItem;
-            Settings.Runs = ((BindingList<Run>) runDataGridView.DataSource).Where(r => !string.IsNullOrEmpty(r.Name.Trim())).ToList();
+            Settings.Runs = ((BindingList<Run>)runDataGridView.DataSource).Where(r => !string.IsNullOrEmpty(r.Name.Trim())).ToList();
             Close();
         }
+
+        #endregion
     }
 }

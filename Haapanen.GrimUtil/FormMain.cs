@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Haapanen.GrimUtil.Ui.Data;
+using Haapanen.GrimUtil.Ui.Dialogs;
+using Haapanen.GrimUtil.Ui.Entities;
+using Haapanen.GrimUtil.Ui.WinApi;
 using Newtonsoft.Json;
 
 namespace Haapanen.GrimUtil.Ui
@@ -41,7 +41,7 @@ namespace Haapanen.GrimUtil.Ui
             {
                 _settings = _settingsRepository.LoadSettings();
             }
-            catch (JsonException e)
+            catch (JsonException)
             {
                 _settings = new Settings();
                 _settingsRepository.BackupSettingsFile();
@@ -57,6 +57,8 @@ namespace Haapanen.GrimUtil.Ui
             _viewRefreshTimer.Tick += ViewRefreshTimerOnTick;
             _viewRefreshTimer.Start();
         }
+
+        #region Internal API
 
         private string GetCurrentRunName()
         {
@@ -77,28 +79,8 @@ namespace Haapanen.GrimUtil.Ui
             trackedItemsGrid.DataSource = _trackedItems[GetCurrentRunName()];
         }
 
-        private void ClearLogButtonOnClick(object o, EventArgs eventArgs)
-        {
-            if (MessageBox.Show("Clear log?", "Confirmation", MessageBoxButtons.OKCancel) == DialogResult.OK)
-            {
-                _runRecords.Clear();
-                logTextBox.Text = "";
-            }
-        }
-
-        private void CopyToClipboardButonOnClick(object o, EventArgs eventArgs)
-        {
-            Clipboard.SetText(string.Join("\r\n", _runRecords.Select(r => r.ToSpreadsheet())));
-        }
-
-        private void ViewRefreshTimerOnTick(object o, EventArgs eventArgs)
-        {
-            currentRunTimeLabel.Text = _timerManager.GetDuration(GetCurrentRunName()).ToString("g");
-        }
-
         private void ApplySettings(Settings settings)
         {
-            _timerManager.SetAvailableRuns(settings.Runs.Select(r => r.Name).ToList());
             SetupKeyboardHooks(settings);
             _runs = settings.Runs;
             if (!_runs.Any())
@@ -108,17 +90,6 @@ namespace Haapanen.GrimUtil.Ui
             _currentRun = 0;
             UpdateCurrentRunLabel();
             InitializeTrackedItemsGrid();
-        }
-
-        private void SetupKeysToolStripMenuItemOnClick(object o, EventArgs eventArgs)
-        {
-            var settingsDialog = new SettingsDialog(_settings);
-            if (settingsDialog.ShowDialog() == DialogResult.OK)
-            {
-                _settings = settingsDialog.Settings;
-                _settingsRepository.WriteSettings(settingsDialog.Settings);
-                ApplySettings(_settings);
-            }
         }
 
         private void SetupKeyboardHooks(Settings settings)
@@ -157,6 +128,52 @@ namespace Haapanen.GrimUtil.Ui
                 OnKeyUp = OnDecValuePress
             });
         }
+
+        private void UpdateCurrentRunLabel()
+        {
+            currentRunLabel.Text = GetCurrentRunName();
+        }
+
+        private void InitializeKeyboardHook()
+        {
+            _hook.Hook();
+            this.Closing += (sender, args) => { _hook.Unhook(); };
+        }
+
+        #endregion
+
+        #region Event handlers
+
+        private void ClearLogButtonOnClick(object o, EventArgs eventArgs)
+        {
+            if (MessageBox.Show("Clear log?", "Confirmation", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                _runRecords.Clear();
+                logTextBox.Text = "";
+            }
+        }
+
+        private void CopyToClipboardButonOnClick(object o, EventArgs eventArgs)
+        {
+            Clipboard.SetText(string.Join("\r\n", _runRecords.Select(r => r.ToSpreadsheet())));
+        }
+
+        private void ViewRefreshTimerOnTick(object o, EventArgs eventArgs)
+        {
+            currentRunTimeLabel.Text = _timerManager.GetDuration(GetCurrentRunName()).ToString("g");
+        }
+
+        private void SetupKeysToolStripMenuItemOnClick(object o, EventArgs eventArgs)
+        {
+            var settingsDialog = new SettingsDialog(_settings);
+            if (settingsDialog.ShowDialog() == DialogResult.OK)
+            {
+                _settings = settingsDialog.Settings;
+                _settingsRepository.WriteSettings(settingsDialog.Settings);
+                ApplySettings(_settings);
+            }
+        }
+
 
         private void OnDecValuePress()
         {
@@ -208,7 +225,7 @@ namespace Haapanen.GrimUtil.Ui
                 {
                     Count = 0
                 }).ToList()
-            ); 
+            );
             InitializeTrackedItemsGrid();
         }
 
@@ -224,15 +241,6 @@ namespace Haapanen.GrimUtil.Ui
             InitializeTrackedItemsGrid();
         }
 
-        private void UpdateCurrentRunLabel()
-        {
-            currentRunLabel.Text = GetCurrentRunName();
-        }
-
-        private void InitializeKeyboardHook()
-        {
-            _hook.Hook();
-            this.Closing += (sender, args) => { _hook.Unhook(); };
-        }
+        #endregion
     }
 }

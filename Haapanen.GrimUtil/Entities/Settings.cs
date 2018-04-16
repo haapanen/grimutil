@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Haapanen.GrimUtil.Ui
+namespace Haapanen.GrimUtil.Ui.Entities
 {
     public class Settings 
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Haapanen.GrimUtil.Ui
+namespace Haapanen.GrimUtil.Ui.WinApi
 {
     public class HookCallbacks
     {

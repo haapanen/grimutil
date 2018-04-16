@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Haapanen.GrimUtil.Ui.Entities;
 using Newtonsoft.Json;
 
-namespace Haapanen.GrimUtil.Ui
+namespace Haapanen.GrimUtil.Ui.Data
 {
     public class SettingsRepository
     {
-        private readonly string _dataFolder;
         private readonly string _settingsPath;
 
         public SettingsRepository(string dataFolder)
         {
-            _dataFolder = dataFolder;
-            _settingsPath = Path.Combine(_dataFolder, FileNameConstants.Settings);
+            _settingsPath = Path.Combine(dataFolder, FileNameConstants.Settings);
         }
 
         public Settings LoadSettings()

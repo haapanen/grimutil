@@ -1,4 +1,4 @@
-﻿namespace Haapanen.GrimUtil.Ui
+﻿namespace Haapanen.GrimUtil.Ui.Dialogs
 {
     partial class SettingsDialog
     {
@@ -230,7 +230,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 213);
+            this.label6.Location = new System.Drawing.Point(12, 197);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(80, 13);
             this.label6.TabIndex = 19;
@@ -239,7 +239,7 @@
             // selectPreviousKeyCombobox
             // 
             this.selectPreviousKeyCombobox.FormattingEnabled = true;
-            this.selectPreviousKeyCombobox.Location = new System.Drawing.Point(15, 229);
+            this.selectPreviousKeyCombobox.Location = new System.Drawing.Point(15, 213);
             this.selectPreviousKeyCombobox.Name = "selectPreviousKeyCombobox";
             this.selectPreviousKeyCombobox.Size = new System.Drawing.Size(121, 21);
             this.selectPreviousKeyCombobox.TabIndex = 20;
@@ -247,7 +247,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(12, 253);
+            this.label7.Location = new System.Drawing.Point(12, 237);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(60, 13);
             this.label7.TabIndex = 21;
@@ -256,7 +256,7 @@
             // selectNextCombobox
             // 
             this.selectNextCombobox.FormattingEnabled = true;
-            this.selectNextCombobox.Location = new System.Drawing.Point(15, 269);
+            this.selectNextCombobox.Location = new System.Drawing.Point(15, 253);
             this.selectNextCombobox.Name = "selectNextCombobox";
             this.selectNextCombobox.Size = new System.Drawing.Size(121, 21);
             this.selectNextCombobox.TabIndex = 22;
@@ -264,7 +264,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(14, 293);
+            this.label8.Location = new System.Drawing.Point(14, 277);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(84, 13);
             this.label8.TabIndex = 23;
@@ -273,7 +273,7 @@
             // incrementCountKeyCombobox
             // 
             this.incrementCountKeyCombobox.FormattingEnabled = true;
-            this.incrementCountKeyCombobox.Location = new System.Drawing.Point(15, 309);
+            this.incrementCountKeyCombobox.Location = new System.Drawing.Point(15, 293);
             this.incrementCountKeyCombobox.Name = "incrementCountKeyCombobox";
             this.incrementCountKeyCombobox.Size = new System.Drawing.Size(121, 21);
             this.incrementCountKeyCombobox.TabIndex = 24;
@@ -281,7 +281,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(14, 333);
+            this.label9.Location = new System.Drawing.Point(14, 317);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(89, 13);
             this.label9.TabIndex = 25;
@@ -290,7 +290,7 @@
             // decrementCountKeyCombobox
             // 
             this.decrementCountKeyCombobox.FormattingEnabled = true;
-            this.decrementCountKeyCombobox.Location = new System.Drawing.Point(15, 349);
+            this.decrementCountKeyCombobox.Location = new System.Drawing.Point(15, 333);
             this.decrementCountKeyCombobox.Name = "decrementCountKeyCombobox";
             this.decrementCountKeyCombobox.Size = new System.Drawing.Size(121, 21);
             this.decrementCountKeyCombobox.TabIndex = 26;
